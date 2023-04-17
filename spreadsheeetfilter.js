@@ -150,6 +150,9 @@ class DataProcessing {
         filteredRows = filteredRows.map((element) => desiredHeaderIndexes.map((el) => element[el]))
         }
 
+        let finalHeaderIndexes = {}
+        header.forEach((element) => finalHeaderIndexes[header.indexOf(element)] = element)
+
         //concats both the header and the filtered data
         const filteredRowsWithHeader = [header].concat(filteredRows)
         //modified the orginal constructor to update with the new data
@@ -157,8 +160,9 @@ class DataProcessing {
         const returnObj = {
         "header": header,
         "data": filteredRows,
-        "combined": filteredRowsWithHeader
+        "combined": filteredRowsWithHeader,
+        "indexes": finalHeaderIndexes
         };
         return returnObj;
-    };
+    }
 }
