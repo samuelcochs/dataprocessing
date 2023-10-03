@@ -40,6 +40,13 @@ Spreadsheet Size Methods: Describe these methods here.
         sId: Sheet Id,
       })
 
+      Adding in header start index:
+      const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+        ssId: Spreadsheet Id,
+        sId: Sheet Id,
+        headerStartIndex: int
+      })
+
       Adding in row filtering:
       const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
         ssId: Spreadsheet Id,
@@ -55,6 +62,45 @@ Spreadsheet Size Methods: Describe these methods here.
         colFilters: [Column Names],
         includeColValues: boolean
       })
+
+      Adding in sorting:
+      const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+        ssId: Spreadsheet Id,
+        sId: Sheet Id,
+        sortingConfig: [{columnName: Column Name, ascending: true}]
+      })
+
+      Adding in row num:
+      const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+        ssId: Spreadsheet Id,
+        sId: Sheet Id,
+        addRowNum: boolean
+      })
+
+      Final example with real data:
+      const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+        ssId: "1bAgj9v08bJH85Cz8NwwjNWlBeTAKDzq0Ka0WL6oNP_0",
+        sId: 0,
+        headerStartIndex: 0,
+        rowFilters: { "Zone": ["1"] },
+        includeRowValues: { "Zone": true },
+        colFilters: ["Lease Num", "Zone", "State"],
+        includeColValues: true,
+        sortingConfig: [{ columnName: "State", ascending: true }],
+        addRowNum: true
+      })
+
+      This is the result you should expect from the data variable:
+      [
+        [Lease Num, Zone, State],
+        [LCT00346, 1, CA],
+        [LCT00286, 1, IN]
+      ]
+
+      
+      
+
+      
       ```
   - Using the updateRows() method: 
     - Explain how to use it.
