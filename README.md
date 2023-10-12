@@ -26,86 +26,116 @@ Spreadsheet Size Methods: Describe these methods here.
         - sortingConfig: An Array of Object's where the Object has two elements columnName and ascending, the columnName should have a value of the column name and ascending should be a boolean
         - addRowNum: A boolean value of whether to include the rowNum
       - There are two main ways to use the getData method both return an obj but one returns the data in the obj as an obj and the other returns it as a 2d array.
-      ```
-      Obj Option:
-      const {header, rows, allHeaderIndexes} = dataProc.getData({
-        ssId: Spreadsheet Id,
-        sId: Sheet Id,
-        objKey: Column header name to use as the key
-      })
-
-      Array Option:
-      const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
-        ssId: Spreadsheet Id,
-        sId: Sheet Id,
-      })
-
-      Adding in header start index:
-      const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
-        ssId: Spreadsheet Id,
-        sId: Sheet Id,
-        headerStartIndex: int
-      })
-
-      Adding in row filtering:
-      const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
-        ssId: Spreadsheet Id,
-        sId: Sheet Id,
-        rowFilters: {Column Name: [Values to filter],
-        includeRowValues: {Column Name: boolean}
-      })
-
-      Adding in column filtering:
-      const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
-        ssId: Spreadsheet Id,
-        sId: Sheet Id,
-        colFilters: [Column Names],
-        includeColValues: boolean
-      })
-
-      Adding in sorting:
-      const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
-        ssId: Spreadsheet Id,
-        sId: Sheet Id,
-        sortingConfig: [{columnName: Column Name, ascending: true}]
-      })
-
-      Adding in row num:
-      const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
-        ssId: Spreadsheet Id,
-        sId: Sheet Id,
-        addRowNum: boolean
-      })
-
-      Final example with real data:
-      const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
-        ssId: "1bAgj9v08bJH85Cz8NwwjNWlBeTAKDzq0Ka0WL6oNP_0",
-        sId: 0,
-        headerStartIndex: 0,
-        rowFilters: { "Zone": ["1"] },
-        includeRowValues: { "Zone": true },
-        colFilters: ["Lease Num", "Zone", "State"],
-        includeColValues: true,
-        sortingConfig: [{ columnName: "State", ascending: true }],
-        addRowNum: true
-      })
-
-      This is the result you should expect from the data variable:
-      [
-        [Lease Num, Zone, State],
-        [LCT00346, 1, CA],
-        [LCT00286, 1, IN]
-      ]
-
-      
-      
-
-      
-      ```
+        - Obj Option:
+        ```javascript
+        const {header, rows, allHeaderIndexes} = dataProc.getData({
+          ssId: Spreadsheet Id,
+          sId: Sheet Id,
+          objKey: Column header name to use as the key
+        })
+        ```
+        - Array Option:
+        ```javascript
+        const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+          ssId: Spreadsheet Id,
+          sId: Sheet Id,
+        })
+        ```
+        - Adding in header start index:
+        ```javascript
+        const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+          ssId: Spreadsheet Id,
+          sId: Sheet Id,
+          headerStartIndex: int
+        })
+        ```
+        - Adding in row filtering:
+        ```javascript
+        const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+          ssId: Spreadsheet Id,
+          sId: Sheet Id,
+          rowFilters: {Column Name: [Values to filter],
+          includeRowValues: {Column Name: boolean}
+        })
+        ```
+        - Adding in column filtering:
+        ```javascript
+        const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+          ssId: Spreadsheet Id,
+          sId: Sheet Id,
+          colFilters: [Column Names],
+          includeColValues: boolean
+        })
+        ```
+        - Adding in sorting:
+        ```javascript
+        const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+          ssId: Spreadsheet Id,
+          sId: Sheet Id,
+          sortingConfig: [{columnName: Column Name, ascending: true}]
+        })
+        ```
+        - Adding in row num:
+        ```javascript
+        const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+          ssId: Spreadsheet Id,
+          sId: Sheet Id,
+          addRowNum: boolean
+        })
+        ```
+        - Final example with real data:
+        ```javascript
+        const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+          ssId: "1bAgj9v08bJH85Cz8NwwjNWlBeTAKDzq0Ka0WL6oNP_0",
+          sId: 0,
+          headerStartIndex: 0,
+          rowFilters: { "Zone": ["1"] },
+          includeRowValues: { "Zone": true },
+          colFilters: ["Lease Num", "Zone", "State"],
+          includeColValues: true,
+          sortingConfig: [{ columnName: "State", ascending: true }],
+          addRowNum: true
+        })
+  
+        This is the result you should expect from the data variable:
+        [
+          [Lease Num, Zone, State],
+          [LCT00346, 1, CA],
+          [LCT00286, 1, IN]
+        ]
+        ```
   - Using the updateRows() method: 
-    - Explain how to use it.
-  - Using the getNextRow() method: 
-    - Explain how to use it.
+    - This method requires as its only argument. The object should be structured as follows:
+    ```javascript
+    const updateRowsObj = {
+      ssId: Spreadsheet Id,
+      sId: Sheet Id,
+      updateRowsData: { rowNum: [{ colNum: Column Index, values: An array of values to update the row with }] }
+    }
+    ```
+    - A real example of this is:
+    ```javascript
+    const updateRowsObj = {
+      ssId: "1bAgj9v08bJH85Cz8NwwjNWlBeTAKDzq0Ka0WL6oNP_0",
+      sId: 817299795,
+      updateRowsData: {
+        2:
+          [
+            { colNum: 0, values: ["LMA04620"] },
+            { colNum: 4, values: ["test"]}
+          ],
+        3:
+          [
+            { colNum: 0, values: ["LTX03123","Test"] }
+          ]
+      }
+    }
+    ```
+  - Using the pushData() method: 
+    - This method requires an object as its only argument. The object should be strucutred as follows:
+    ```javascript
+    
+    ```
   - Using the updateRows() method: 
     - Explain how to use it.
 
