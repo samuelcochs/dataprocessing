@@ -134,7 +134,43 @@ Spreadsheet Size Methods: Describe these methods here.
   - Using the pushData() method: 
     - This method requires an object as its only argument. The object should be strucutred as follows:
     ```javascript
-    
+    const pushDataObj = {
+      ssId: Spreadsheet Id,
+      sId: Sheet Id,
+      startRowIndex: Index of row to start on,
+      startColIndex: Index of col to start on,
+      extraRows: The amount of extra rows you would like after the data,
+      extraCols: The amount of extra cols you would like on the right side of the data,
+      data: A 2d array of data that you would like to put on the spreadsheet,
+      typeOfData: If you would like to use the data in the constructor and leave the data key blank then input filtered or unfiltered here
+    }
+    ```
+    - Basic Example(Using all required inputs)
+    ```javascript
+    const pushDataObj = {
+      ssId: Spreadsheet Id,
+      sId: Sheet Id,
+      data: [[1,2],[3,4]]
+    }
+    or
+    const pushDataObj = {
+      ssId: Spreadsheet Id,
+      sId: Sheet Id,
+      typeOfData: 'filtered'
+    }
+    ```
+    - More complex example using all options
+      - This will start on row 2 and column 
+    ```javascript
+    cosnt pushDataObj = {
+      ssId: Spreadsheet Id,
+      sId: Sheet Id,
+      data: [[1,2],[3,4]],
+      startRowIndex: 1,
+      startColIndex: 1,
+      extraRows: 10,
+      extraCols: 10
+    }
     ```
   - Using the updateRows() method: 
     - Explain how to use it.
@@ -144,3 +180,31 @@ The Google Sheets Helper Class offers a multitude of methods that streamline var
 
 
 Remember to fill in placeholders (like "Sample code for initialization goes here") with the actual content, and you can add more explanations or sample code for the methods as needed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
