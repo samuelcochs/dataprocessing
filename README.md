@@ -18,7 +18,7 @@ Spreadsheet Size Methods: Describe these methods here.
         - sId: sheet Id
       - Optional
         - ssId: spreadsheetId, you only have to input this if you want to change the spreadsheet id from the one you used to intialize the class
-        - headerStartIndex: Row index of the header
+        - headerStart: Row index of the header
         - rowFilters: An Object with the columns as the keys and the values of row values that you want to include or exclude
         - includeRowValues: An Object with the column names as the keys and a boolean as the value which determines whether to include or exclude the values provided in rowFilters
         - colFilters: An Array of columns names to either include or exclude
@@ -46,7 +46,7 @@ Spreadsheet Size Methods: Describe these methods here.
         const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
           ssId: Spreadsheet Id,
           sId: Sheet Id,
-          headerStartIndex: int
+          headerStart: int
         })
         ```
         - Adding in row filtering:
@@ -88,7 +88,7 @@ Spreadsheet Size Methods: Describe these methods here.
         const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
           ssId: "1bAgj9v08bJH85Cz8NwwjNWlBeTAKDzq0Ka0WL6oNP_0",
           sId: 0,
-          headerStartIndex: 0,
+          headerStart: 0,
           rowFilters: { "Zone": ["1"] },
           includeRowValues: { "Zone": true },
           colFilters: ["Lease Num", "Zone", "State"],
