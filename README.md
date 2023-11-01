@@ -174,7 +174,11 @@ Spreadsheet Size Methods: Describe these methods here.
     ```
   - Using the updateRows() method: 
     - Explain how to use it.
-
+   
+  - Basic Example of getUniqueRowsByCol
+    ```javascript
+    dataProc.getUniqueRowsByColumn({colName: "Lease Num", typeOfData: "unfiltered" })
+    ```
 ## Conclusion
 The Google Sheets Helper Class offers a multitude of methods that streamline various operations on Google Sheets. With this class, developers can efficiently interact with sheets, format data, and more. Ensure you have the necessary permissions and have set up the Google Sheets API correctly before diving in.
 
