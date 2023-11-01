@@ -1036,19 +1036,30 @@ class DataProcessing {
    *  data: [[],[]]
    * }
    */
-  getUniqueRowsByColumn(uniqueObj) {
-    let { columnName, typeOfData, data } = uniqueObj;
+  getUniqueRowsByCol(uniqueObj) {
+    let { colName, typeOfData, includeAllCols = true, data } = uniqueObj;
     if (typeOfData) {
       data = this.getTypeOfData(typeOfData);
     }
     const header = data[0];
     const rows = data.slice(1);
-    Logger.log(rows);
-    const indexOfColumnName = header.indexOf(columnName);
-    Logger.log(header)
-    Logger.log(columnName)
-    Logger.log(indexOfColumnName)
-    return [...new Set(rows.map(row => row[indexOfColumnName]))];
+    const indexOfColName = header.indexOf(colName);
+    if (includeAllCols) {
+      const getColumnUniqueRows = (arr, colIndex) => {
+        const seen = {};
+        return arr.reduce((acc, row) => {
+          if (!seen[row[colIndex]]) {
+            seen[row[colIndex]] = true;
+            acc.push(row);
+          }
+          return acc;
+        }, []);
+      }
+      return getColumnUniqueRows(rows, indexOfColName);
+    } else {
+      return [...new Set(rows.map(row => row[indexOfColName]))];
+    }
+
   }
 
   /**----------------------------------------------------------------------- Ends Helper Methods -------------------------------------------------------
