@@ -167,6 +167,8 @@ class DataProcessing {
    */
   sortRows(dataFilters) {
     if (dataFilters.sortingConfig != null) {
+      dataFilters.sortingHeader = [...dataFilters.header];
+      this.removeColumns(dataFilters.sortingHeader, dataFilters.colIndexes, dataFilters.includeColValues);
       const sortingConfigObj = dataFilters.sortingConfig;
       let sortingConfigError = false;
       sortingConfigObj.forEach(e => { if (!dataFilters.header.includes(e.columnName)) { sortingConfigError = true; } });
