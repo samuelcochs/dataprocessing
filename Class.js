@@ -3,8 +3,68 @@
   Contact: samuel.ochs@gsa.gov
   Created to centralize my data processing 
   Version 1.0.0
+  //
+  Change Log:
+    Version 6 - Added sorting based on given column orientation
+    Version 8 - Added ability to start pushData at a row other than 1
+    Version 9 - Fixed deletion of extra rows
+    Version 10 - Added help method
+    Version 12 - FormatData added
+    Version 14 - Added formatRange
+    Version 16 - Fixed formatData
+    Version 18 - Deleted deprecated methods
+    0.1.6 , Version 19 - Added formatData(): phone and duns option
+    Version 30 - V0.1.6 Beta, removed substr
+    Version 33 - added calculateFiscalYear
+    Version 34 - added clear of contents to pushdata
+    Version 35 - added new zipcode formatting
+    Version 36 - added addZone()
+    Version 38 - added extraRows to pushData()
+    Version 40 - modified filter data to handle, backslashes
+    Version 41 - fixed blank row fitlering, sometimes empty cells on a sheet can be null
+    Version 42 - added filterDates
+    Version 43 - updates to filterDates
+    Version 44 - updated getData to fix bug using getData as an object
+    Version 45 - added getDataArr() & getFilteredDataArr()
+    Version 46 - added date to formatData()
+    Version 47 - set .toLocaleDateString() to .toLocaleDateString("en-US")
+    Version 48 - updated setDataArr and getDataArr to correct camel case
+    Version 49 - added addSheet()
+    Version 50 - added refreshFormulas()
+    Version 51 - added getMultipleDataSources()
+    Version 52 - added refreshData()
+    Version 54 - functionality to add rowNum to getData as arr
+    Version 56 - added tryCatchWithRetries()
+    Version 57 - added exponential delay to tryCatchWithRetries()
+    Version 58 - added convertDates()
+    Version 59 - added mergeData()
+    Version 60 - added error handler if lookup value is not found for mergeData()
+    Version 61 - added combined to getDataSheetArr to returned obj
+    Version 62 - Updated getAndFilterDataObj to leave key in values
+    Version 63 - Added RowNum to header when add row num is selected
+    Version 65 - Added getNextRow() returns the last row plus one
+    Version 66 - Fixed bug with getting rowNum when using getData(), rowNum was getting dropped when filtering on both rows and columns 
+    Version 67 - updateSheetRange updated parameter order, getNextRow changed to add rows when no blank rows are left on the sheet, and updated zipcode format
+    Version 68 - Modified getAndFilterDataObj() to allow for filtering of blank columns, the api drops blanks columns when there is no more data on the right
+    Version 69 - Modified getNextRow() to use getMaxRows() instead of getLastRow()
+    Version 70 - added addDataValidation()
+    Version 71 - modified getAndFilterDataArr() to break if there was an error with the header filtering/header row start
+    Version 72 - added addRows() allows, updated getAndFilterDataArr() to work with blanks cells and row num
+    Version 73 - added headerStart to formatRange(), non breaking
+    Version 74 - changed getAndFilterDataArr() and getAndFilterDataObj() to fill blank rows with "" instead of null to match what google returns
+                  there was only a differnce depending on whether there was a last column of data
+    Version 75 - Updated updateRow() to use "valueInputOption": "USER_ENTERED", instead of "valueInputOption": "RAW"
+    Version 76 - Udpated refreshData() to allow changes to the column number. 
+    Version 77 - Added method updateRows(), to allow for multiple non-synchronous rows to be updated at once.
+    Version 78-80 - Multiple additions
+    Version 81 - Added error thrower to updateRows()
+    Version 82 - Fixed multiple errors
+  //
   If you have any questions or ways to improve the code
   feel free to email me.
+  Addition Log:
+
+  Issue Log:
 */
 
 
@@ -420,8 +480,6 @@ class DataProcessing {
       return this.getAndFilterDataArr(dataFilters);
     } else {
       const { header, rows, data, headerIndexes, allHeaderIndexes } = this.getAndFilterDataArr(dataFilters);
-      Logger.log("Here22222")
-      Logger.log(data)
       this.dataArr = data;
       return {
         header,
