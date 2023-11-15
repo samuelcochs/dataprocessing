@@ -171,14 +171,14 @@ class DataProcessing {
       this.removeColumns(dataFilters.sortingHeader, dataFilters.colIndexes, dataFilters.includeColValues);
       const sortingConfigObj = dataFilters.sortingConfig;
       let sortingConfigError = false;
-      sortingConfigObj.forEach(e => { if (!dataFilters.header.includes(e.columnName)) { sortingConfigError = true; } });
+      sortingConfigObj.forEach(e => { if (!dataFilters.sortingHeader.includes(e.columnName)) { sortingConfigError = true; } });
       if (sortingConfigError) {
         throw new Error("sortingConfig column not found.")
       }
       dataFilters.rows.sort((a, b) => {
         for (const column of sortingConfigObj) {
           const { columnName, ascending } = column;
-          const columnIndex = dataFilters.header.indexOf(columnName);
+          const columnIndex = dataFilters.sortingHeader.indexOf(columnName);
           const sortOrder = ascending ? 1 : -1;
           if (a[columnIndex] < b[columnIndex]) {
             return -1 * sortOrder;
