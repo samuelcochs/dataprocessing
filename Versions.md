@@ -6,3 +6,4 @@
 - Version 88: Refactored sortRows, to allow for removal of columns to work properly.
 - Version 89: Fixed bug in pushData that didn't properly add rows and columns.
 - Version 90: Removed logger.log().
+- Version 91: Fixed bug in reordering columns and filtering causing sorting to not work properly.
