@@ -7,3 +7,4 @@
 - Version 89: Fixed bug in pushData that didn't properly add rows and columns.
 - Version 90: Removed logger.log().
 - Version 91: Fixed bug in reordering columns and filtering causing sorting to not work properly.
+- Version 98: Fixed bug in addRowNum and filtering by columns.
