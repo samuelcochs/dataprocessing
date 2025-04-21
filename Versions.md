@@ -8,3 +8,4 @@
 - Version 90: Removed logger.log().
 - Version 91: Fixed bug in reordering columns and filtering causing sorting to not work properly.
 - Version 98: Fixed bug in addRowNum and filtering by columns.
+- Version 99: Added the ability to limit the amount of rows returned by getData(). Also added a checker for dataFilters that will alert the user to incorrect keys. I.E. colFilters vs colFiltes.
