@@ -2,64 +2,7 @@
   Author: Sam Ochs
   Contact: samuel.ochs@gsa.gov
   Created to centralize my data processing 
-  Version 1.0.0
-  //
-  Change Log:
-    Version 6 - Added sorting based on given column orientation
-    Version 8 - Added ability to start pushData at a row other than 1
-    Version 9 - Fixed deletion of extra rows
-    Version 10 - Added help method
-    Version 12 - FormatData added
-    Version 14 - Added formatRange
-    Version 16 - Fixed formatData
-    Version 18 - Deleted deprecated methods
-    0.1.6 , Version 19 - Added formatData(): phone and duns option
-    Version 30 - V0.1.6 Beta, removed substr
-    Version 33 - added calculateFiscalYear
-    Version 34 - added clear of contents to pushdata
-    Version 35 - added new zipcode formatting
-    Version 36 - added addZone()
-    Version 38 - added extraRows to pushData()
-    Version 40 - modified filter data to handle, backslashes
-    Version 41 - fixed blank row fitlering, sometimes empty cells on a sheet can be null
-    Version 42 - added filterDates
-    Version 43 - updates to filterDates
-    Version 44 - updated getData to fix bug using getData as an object
-    Version 45 - added getDataArr() & getFilteredDataArr()
-    Version 46 - added date to formatData()
-    Version 47 - set .toLocaleDateString() to .toLocaleDateString("en-US")
-    Version 48 - updated setDataArr and getDataArr to correct camel case
-    Version 49 - added addSheet()
-    Version 50 - added refreshFormulas()
-    Version 51 - added getMultipleDataSources()
-    Version 52 - added refreshData()
-    Version 54 - functionality to add rowNum to getData as arr
-    Version 56 - added tryCatchWithRetries()
-    Version 57 - added exponential delay to tryCatchWithRetries()
-    Version 58 - added convertDates()
-    Version 59 - added mergeData()
-    Version 60 - added error handler if lookup value is not found for mergeData()
-    Version 61 - added combined to getDataSheetArr to returned obj
-    Version 62 - Updated getAndFilterDataObj to leave key in values
-    Version 63 - Added RowNum to header when add row num is selected
-    Version 65 - Added getNextRow() returns the last row plus one
-    Version 66 - Fixed bug with getting rowNum when using getData(), rowNum was getting dropped when filtering on both rows and columns 
-    Version 67 - updateSheetRange updated parameter order, getNextRow changed to add rows when no blank rows are left on the sheet, and updated zipcode format
-    Version 68 - Modified getAndFilterDataObj() to allow for filtering of blank columns, the api drops blanks columns when there is no more data on the right
-    Version 69 - Modified getNextRow() to use getMaxRows() instead of getLastRow()
-    Version 70 - added addDataValidation()
-    Version 71 - modified getAndFilterDataArr() to break if there was an error with the header filtering/header row start
-    Version 72 - added addRows() allows, updated getAndFilterDataArr() to work with blanks cells and row num
-    Version 73 - added headerStart to formatRange(), non breaking
-    Version 74 - changed getAndFilterDataArr() and getAndFilterDataObj() to fill blank rows with "" instead of null to match what google returns
-                  there was only a differnce depending on whether there was a last column of data
-    Version 75 - Updated updateRow() to use "valueInputOption": "USER_ENTERED", instead of "valueInputOption": "RAW"
-    Version 76 - Udpated refreshData() to allow changes to the column number. 
-    Version 77 - Added method updateRows(), to allow for multiple non-synchronous rows to be updated at once.
-    Version 78-80 - Multiple additions
-    Version 81 - Added error thrower to updateRows()
-    Version 82 - Fixed multiple errors
-  //
+  Version 99
   If you have any questions or ways to improve the code
   feel free to email me.
   Addition Log:
@@ -180,11 +123,29 @@ class DataProcessing {
           const { columnName, ascending } = column;
           const columnIndex = dataFilters.sortingHeader.indexOf(columnName);
           const sortOrder = ascending ? 1 : -1;
-          if (a[columnIndex] < b[columnIndex]) {
-            return -1 * sortOrder;
-          }
-          if (a[columnIndex] > b[columnIndex]) {
-            return sortOrder;
+
+          const valueA = a[columnIndex];
+          const valueB = b[columnIndex];
+
+          // Handle null or undefined values
+          if (valueA == null) return ascending ? 1 : -1;
+          if (valueB == null) return ascending ? -1 : 1;
+
+          // Convert to number if possible
+          const numA = parseFloat(valueA);
+          const numB = parseFloat(valueB);
+
+          // Check if both values are valid numbers
+          if (!isNaN(numA) && !isNaN(numB)) {
+            if (numA < numB) return -1 * sortOrder;
+            if (numA > numB) return sortOrder;
+          } else {
+            // Fallback to string comparison
+            const strA = String(valueA).toLowerCase();
+            const strB = String(valueB).toLowerCase();
+
+            if (strA < strB) return -1 * sortOrder;
+            if (strA > strB) return sortOrder;
           }
         }
         return 0;
@@ -307,8 +268,11 @@ class DataProcessing {
    * @param {Object} dataFilters - The main dataFilters Object - See the getData method for more info
    */
   filterAndModifyRows(dataFilters) {
-    if (dataFilters.addRowNum) {
-      dataFilters.header.push("rowNum");
+    const numOfRowsToProcess = dataFilters.limitRows != null
+      ? Math.min(dataFilters.rows.length, dataFilters.limitRows)
+      : dataFilters.rows.length;
+    if (numOfRowsToProcess != dataFilters.rows.length) {
+      dataFilters.rows = dataFilters.rows.slice(0, numOfRowsToProcess);
     }
     for (let i = dataFilters.rows.length - 1; i >= 0; i--) {
       const row = dataFilters.rows[i];
@@ -386,6 +350,15 @@ class DataProcessing {
     }
   };
 
+  checkDataFilterKeys(dataFilters) {
+    const validKeys = ["ssId", "sId", "headerStart", "rowFilters", "includeRowValues", "colFilters", "includeColValues", "sortingConfig", "addRowNum", "limitRows", "objKey"];
+    Object.keys(dataFilters).forEach(key => {
+      if (!validKeys.includes(key)) {
+        throw Error("Incorrect key: " + key)
+      }
+    })
+  }
+
   /**
    * Gets and filters the spreadsheet data and returns it as an Object with Arrays
    * @param {Object} dataFilters - The main dataFilters Object - See the getData method for more info
@@ -393,8 +366,16 @@ class DataProcessing {
   getAndFilterDataArr(dataFilters) {
     //Check if ssId is supplied if not set to one from constructor
     if (!dataFilters.ssId) { dataFilters.ssId = this.ssId }
-    //
+    this.checkDataFilterKeys(dataFilters);
     this.getHeaderAndRows(dataFilters);
+    if (dataFilters.addRowNum) {
+      dataFilters.header.push("rowNum");
+      if (dataFilters.colFilters) {
+        if (!dataFilters.colFilters.includes("rowNum")) {
+          dataFilters.colFilters.push("rowNum");
+        }
+      }
+    }
     let headerIndexLookup = this.createHeaderIndexLookup(dataFilters);
     Object.assign(dataFilters, { headerIndexLookup })
     if (dataFilters.rowFilters != null) {
@@ -930,6 +911,7 @@ class DataProcessing {
             }
           }]
       };
+      Logger.log(JSON.stringify(request, null, 3))
       Sheets.Spreadsheets.batchUpdate(request, ssId);
     }
   };
@@ -1131,8 +1113,8 @@ class DataProcessing {
     let sheet2Name = "";
     this.getNamesAndIdsOfSheets({ ssId }).forEach((e => { if (e[0] == sId) { sheet2Name = e[1] } }));
     const lastRow = SpreadsheetApp.openById(ssId).getSheetByName(sheet2Name).getMaxRows();
-    if (nextRow > lastRow) {
-      this.addRows(sId, 10);
+    if (nextRow >= lastRow) {
+      this.addRows({ ssId, sId, rowsToAdd: 5 });
     }
     return nextRow;
   };
@@ -1343,5 +1325,3 @@ class DataProcessing {
 
 
 };
-
-
