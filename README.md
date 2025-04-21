@@ -25,6 +25,7 @@ Spreadsheet Size Methods: Describe these methods here.
         - includeColValues: A boolean value which indicates whether to include or exclude the values in colFilters
         - sortingConfig: An Array of Object's where the Object has two elements columnName and ascending, the columnName should have a value of the column name and ascending should be a boolean
         - addRowNum: A boolean value of whether to include the rowNum
+        - limitRows: The number of rows you want to return
       - There are two main ways to use the getData method both return an obj but one returns the data in the obj as an obj and the other returns it as a 2d array.
         - Obj Option:
         ```javascript
@@ -81,6 +82,14 @@ Spreadsheet Size Methods: Describe these methods here.
           ssId: Spreadsheet Id,
           sId: Sheet Id,
           addRowNum: boolean
+        })
+        ```
+        - Adding in limit rows:
+        ```javascript
+        const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+          ssId: Spreadsheet Id,
+          sId: Sheet Id,
+          limitRows: int
         })
         ```
         - Final example with real data:
