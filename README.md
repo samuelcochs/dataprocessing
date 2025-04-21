@@ -103,7 +103,8 @@ Spreadsheet Size Methods: Describe these methods here.
           colFilters: ["Lease Num", "Zone", "State"],
           includeColValues: true,
           sortingConfig: [{ columnName: "State", ascending: true }],
-          addRowNum: true
+          addRowNum: true,
+          limitRows: 2
         })
   
         This is the result you should expect from the data variable:
@@ -181,19 +182,42 @@ Spreadsheet Size Methods: Describe these methods here.
       extraCols: 10
     }
     ```
-  - Using the updateRows() method: 
-    - Explain how to use it.
+
+
+    
+  - Using the getNextRow() method:
+    - Returns the next avaliable row with no data on the desired spreadsheet. If there are no avaliable rows it will automatically add 5 rows to ensure there is one avaliable.
+    ```javascript
+    const nextRowObj = {
+      ssId: Spreadsheet Id,
+      sId: Sheet Id,
+    }
+    dataProc.getNextRow(nextRowObj)
+    ```
+
+
+
+    
+  - Using the tryCatchWithRetries() method:
+    - This method will automatically retry to run a function if it errors out and increase the delay exponentially.
    
-  - Basic Example of getUniqueRowsByCol
+
+
+
+  - Using the getUniqueRowsByCol() method:
+    - This method will return all of the unique values in a column. 
     ```javascript
     dataProc.getUniqueRowsByColumn({colName: "Lease Num", typeOfData: "unfiltered" })
     ```
-## Conclusion
-The Google Sheets Helper Class offers a multitude of methods that streamline various operations on Google Sheets. With this class, developers can efficiently interact with sheets, format data, and more. Ensure you have the necessary permissions and have set up the Google Sheets API correctly before diving in.
+  -
 
 
-Remember to fill in placeholders (like "Sample code for initialization goes here") with the actual content, and you can add more explanations or sample code for the methods as needed.
-
+Template
+  - Using the methodName() method:
+    - Description:
+    - Arguments: 
+    - Argument Descriptions:
+    - Practical Example
 
 
 
