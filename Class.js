@@ -268,18 +268,17 @@ class DataProcessing {
    * @param {Object} dataFilters - The main dataFilters Object - See the getData method for more info
    */
   filterAndModifyRows(dataFilters) {
-    const numOfRowsToProcess = dataFilters.limitRows != null
-      ? Math.min(dataFilters.rows.length, dataFilters.limitRows)
-      : dataFilters.rows.length;
-    if (numOfRowsToProcess != dataFilters.rows.length) {
-      dataFilters.rows = dataFilters.rows.slice(0, numOfRowsToProcess);
-    }
     for (let i = dataFilters.rows.length - 1; i >= 0; i--) {
       const row = dataFilters.rows[i];
       const dataRowIndex = i;
       const spreadsheetRowIndex = (dataFilters.headerStart + 1) + i;
       this.processRow(row, dataRowIndex, spreadsheetRowIndex, dataFilters);
     }
+
+    if (dataFilters.limitRows != null && dataFilters.limitRows < dataFilters.rows.length) {
+      dataFilters.rows = dataFilters.rows.slice(0, dataFilters.limitRows);
+    }
+
     this.sortRows(dataFilters)
   };
 
@@ -1325,3 +1324,5 @@ class DataProcessing {
 
 
 };
+
+
