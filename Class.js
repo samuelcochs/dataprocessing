@@ -532,11 +532,15 @@ class DataProcessing {
    * @param {Object} updateRowsObj - An Object containing the desired destination sheet and the update rows data and params.
    */
   updateRows(updateRowsObj) {
-    const { ssId, sId, updateRowsParams, updateRowsData } = updateRowsObj;
-    let valueInputOption = updateRowsParams ? updateRowsParams.valueInputOption : "USER_ENTERED";
+    const { ssId, sId, updateRowsData, updateOptions } = updateRowsObj;
+    const valueInput = updateOptions?.valueInput ?? "USER_ENTERED";
+    const retries = updateOptions?.retries ?? 2;
+    const delay = updateOptions?.delay ?? 4;
+    const maxDelay = updateOptions?.maxDelay ?? 60;
+
     const request =
     {
-      valueInputOption,
+      valueInputOption: valueInput,
       "data": [
       ]
     };
@@ -563,7 +567,10 @@ class DataProcessing {
         request["data"].push(tempRequest);
       })
     });
-    Sheets.Spreadsheets.Values.batchUpdateByDataFilter(request, ssId);
+    const updateSheetValues = (request, ssId) => {
+      return Sheets.Spreadsheets.Values.batchUpdateByDataFilter(request, ssId);
+    };
+    this.tryCatchWithRetries(() => updateSheetValues(request, ssId), retries, delay, maxDelay)
   };
 
   /** ---------------------------------------------------------------------------------------- Ends Push Data Methods ---------------------------------------------------------------  
@@ -855,6 +862,7 @@ class DataProcessing {
    * @param maxDelay The max number of seconds
    */
   tryCatchWithRetries(func, retries = 2, delay = 4, maxDelay = 60) {
+    Logger.log("Retries: "+ retries)
     try {
       return func();
     } catch (error) {
@@ -865,6 +873,7 @@ class DataProcessing {
         Logger.log("Trying Again.");
         //1.5^(delay/retries)
         const delayTime = Math.round(Math.pow(1.5, (delay / retries)));
+        Logger.log(delayTime)
         if (delayTime > maxDelay) {
           delayTime = maxDelay;
         }
