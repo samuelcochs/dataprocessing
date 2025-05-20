@@ -2,7 +2,7 @@
   Author: Sam Ochs
   Contact: samuel.ochs@gsa.gov
   Created to centralize my data processing 
-  Version 99
+  Version 103
   If you have any questions or ways to improve the code
   feel free to email me.
   Addition Log:
@@ -159,7 +159,8 @@ class DataProcessing {
    * @param {Object} dataFilters - The main dataFilters Object - See the getData method for more info
    */
   getHeaderAndRows(dataFilters) {
-    const data = this.makeBatchGetByDataFilter(dataFilters.ssId, dataFilters.sId);
+    const {retries = 2, delay = 4, maxDelay = 60} = dataFilters.retryConfig || {};
+    const data = this.tryCatchWithRetries(() => this.makeBatchGetByDataFilter(dataFilters.ssId, dataFilters.sId), retries, delay, maxDelay)
     if (!dataFilters.headerStart) {
       dataFilters.headerStart = 0
     }
@@ -350,7 +351,7 @@ class DataProcessing {
   };
 
   checkDataFilterKeys(dataFilters) {
-    const validKeys = ["ssId", "sId", "headerStart", "rowFilters", "includeRowValues", "colFilters", "includeColValues", "sortingConfig", "addRowNum", "limitRows", "objKey"];
+    const validKeys = ["ssId", "sId", "headerStart", "rowFilters", "includeRowValues", "colFilters", "includeColValues", "sortingConfig", "addRowNum", "limitRows", "objKey", "retryConfig"];
     Object.keys(dataFilters).forEach(key => {
       if (!validKeys.includes(key)) {
         throw Error("Incorrect key: " + key)
@@ -862,7 +863,6 @@ class DataProcessing {
    * @param maxDelay The max number of seconds
    */
   tryCatchWithRetries(func, retries = 2, delay = 4, maxDelay = 60) {
-    Logger.log("Retries: "+ retries)
     try {
       return func();
     } catch (error) {
@@ -873,7 +873,6 @@ class DataProcessing {
         Logger.log("Trying Again.");
         //1.5^(delay/retries)
         const delayTime = Math.round(Math.pow(1.5, (delay / retries)));
-        Logger.log(delayTime)
         if (delayTime > maxDelay) {
           delayTime = maxDelay;
         }
@@ -919,7 +918,6 @@ class DataProcessing {
             }
           }]
       };
-      Logger.log(JSON.stringify(request, null, 3))
       Sheets.Spreadsheets.batchUpdate(request, ssId);
     }
   };
