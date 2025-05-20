@@ -92,6 +92,18 @@ Spreadsheet Size Methods: Describe these methods here.
           limitRows: int
         })
         ```
+        - Adding in retrying:
+        ```javascript
+        const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
+          ssId: Spreadsheet Id,
+          sId: Sheet Id,
+          retryConfig: {
+            retries: 2,
+            delay: 4,
+            maxDelay: 60
+          }
+        })
+        ```
         - Final example with real data:
         ```javascript
         const { header, rows, data, headerIndexes, allHeaderIndexes } = dataProc.getData({
